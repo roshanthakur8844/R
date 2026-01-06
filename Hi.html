@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Harmonica</title>
+    <title>Harmonica 2026</title>
     <style>
         * {
             margin: 0;
@@ -14,440 +14,547 @@
         body {
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
+            perspective: 1200px;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
             position: relative;
-            width: 500px;
-            height: 600px;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(0,0,0,0.3));
-            border-radius: 40px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            width: 520px;
+            background: rgba(15, 15, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 100px rgba(0, 255, 150, 0.1);
+            border: 2px solid rgba(0, 255, 150, 0.2);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 30px;
+            gap: 40px;
+            animation: floatIn 0.8s ease;
         }
 
-        .harmonica {
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            color: #00ff9e;
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0, 255, 158, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .harmonica-body {
             position: relative;
-            width: 380px;
-            height: 100px;
-            background: linear-gradient(180deg, #2c2c2c 0%, #1a1a1a 50%, #2c2c2c 100%);
-            border-radius: 50px;
+            width: 420px;
+            height: 120px;
+            background: linear-gradient(145deg, #1a1a2e, #0f3460);
+            border-radius: 60px;
             box-shadow: 
-                inset 0 5px 15px rgba(0,0,0,0.8),
-                0 10px 30px rgba(0,0,0,0.5),
-                inset 0 -5px 15px rgba(255,255,255,0.1);
+                inset 0 10px 30px rgba(0,0,0,0.8),
+                0 20px 50px rgba(0,0,0,0.6),
+                0 0 50px rgba(0, 255, 150, 0.1);
+            border: 2px solid rgba(0, 255, 150, 0.3);
             overflow: hidden;
-            border: 3px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .holes {
+        .holes-container {
             display: flex;
-            height: 100%;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 20px;
+            gap: 8px;
+            padding: 0 25px;
+            width: 100%;
+            justify-content: center;
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
 
         .hole {
-            width: 40px;
-            height: 60px;
-            background: radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.2), transparent);
-            border: 2px solid #555;
-            border-radius: 8px;
+            width: 38px;
+            height: 70px;
+            background: linear-gradient(135deg, #0a0a15, #1a1a2e);
+            border: 2px solid #00ff9e;
+            border-radius: 10px;
             position: relative;
             cursor: pointer;
-            transition: all 0.1s ease;
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 12px;
+            color: #00ff9e;
+            font-weight: bold;
+            box-shadow: inset 0 2px 5px rgba(0, 255, 158, 0.1);
         }
 
         .hole:hover {
-            background: radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.4), transparent);
-            border-color: #888;
+            transform: translateY(-8px);
+            box-shadow: 0 0 20px rgba(0, 255, 158, 0.4), inset 0 2px 5px rgba(0, 255, 158, 0.2);
+            background: linear-gradient(135deg, #1a1a2e, #00ff9e15);
         }
 
         .hole.active {
-            background: radial-gradient(ellipse at 30% 30%, rgba(100,200,255,0.6), rgba(50,150,255,0.2));
-            border-color: #4da6ff;
-            box-shadow: 0 0 15px rgba(100,150,255,0.6);
+            background: linear-gradient(135deg, #00ff9e30, #00ff9e10);
+            border-color: #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6), inset 0 2px 5px rgba(0, 255, 158, 0.3);
+            transform: scale(1.1);
         }
 
-        .wave {
+        .harmonica-glow {
             position: absolute;
             width: 100%;
             height: 100%;
-            opacity: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 255, 150, 0.05) 100%);
+            top: 0;
+            left: 0;
+        }
+
+        .mic-section {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .mic-container {
             position: relative;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mic-icon {
-            width: 100px;
-            height: 130px;
-            background: linear-gradient(180deg, #ff6b6b 0%, #ff5252 100%);
-            border-radius: 15px 15px 40px 40px;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(255,107,107,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 50px;
-        }
-
-        .mic-icon::before {
-            content: '🎤';
-        }
-
-        .sound-waves {
-            position: absolute;
             width: 140px;
-            height: 140px;
-            border: 2px solid rgba(255,107,107,0.5);
-            border-radius: 50%;
-            animation: pulse 1s infinite;
+            height: 160px;
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            border-radius: 20px 20px 50px 50px;
+            box-shadow: 0 20px 50px rgba(255, 0, 110, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            animation: micPulse 2s ease-in-out infinite;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
-        .sound-waves.wave-2 {
-            width: 160px;
-            height: 160px;
+        @keyframes micPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .mic-container.active {
+            animation: micPulseActive 0.3s ease-in-out infinite;
+            background: linear-gradient(135deg, #ff0080, #ff6ec7);
+        }
+
+        @keyframes micPulseActive {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .sound-rings {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+        }
+
+        .ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 0, 110, 0.3);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: ringPulse 1.5s ease-out infinite;
+        }
+
+        .ring:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .ring:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        .ring.active {
+            border-color: rgba(0, 255, 255, 0.6);
+            animation: ringPulseActive 0.6s ease-out infinite;
+        }
+
+        .ring.active:nth-child(2) {
             animation-delay: 0.2s;
         }
 
-        .sound-waves.wave-3 {
-            width: 180px;
-            height: 180px;
+        .ring.active:nth-child(3) {
             animation-delay: 0.4s;
         }
 
-        .sound-waves.active {
-            border-color: rgba(100,200,255,0.8);
-            animation: pulse-active 0.5s infinite;
-        }
-
-        @keyframes pulse {
+        @keyframes ringPulse {
             0% {
-                transform: scale(1);
-                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
             }
             100% {
-                transform: scale(1.2);
+                transform: translate(-50%, -50%) scale(1.3);
                 opacity: 0;
             }
         }
 
-        @keyframes pulse-active {
+        @keyframes ringPulseActive {
             0% {
-                transform: scale(1);
-                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
             }
             100% {
-                transform: scale(1.3);
+                transform: translate(-50%, -50%) scale(1.5);
                 opacity: 0;
             }
+        }
+
+        .air-meter {
+            width: 320px;
+            height: 12px;
+            background: rgba(0, 255, 150, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 150, 0.3);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .air-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff006e, #00ff9e);
+            width: 0%;
+            transition: width 0.05s linear;
+            box-shadow: 0 0 15px rgba(0, 255, 158, 0.8);
         }
 
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             width: 100%;
             justify-content: center;
-            flex-wrap: wrap;
         }
 
-        button {
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: bold;
+        .btn {
+            padding: 16px 32px;
+            font-size: 15px;
+            font-weight: 600;
             border: none;
-            border-radius: 25px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            transition: left 0.3s;
+            z-index: -1;
+        }
+
+        .btn:hover:not(:disabled)::before {
+            left: 100%;
         }
 
         .start-btn {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
+            background: linear-gradient(135deg, #00ff9e, #00d4aa);
+            color: #0f3460;
         }
 
         .start-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(76,175,80,0.4);
-        }
-
-        .start-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 255, 158, 0.4);
         }
 
         .stop-btn {
-            background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+            background: linear-gradient(135deg, #ff006e, #ff0090);
             color: white;
         }
 
         .stop-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(244,67,54,0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 0, 110, 0.4);
         }
 
-        .stop-btn:disabled {
-            opacity: 0.5;
+        .btn:disabled {
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
-        .info {
-            color: white;
+        .info-panel {
+            color: #00ff9e;
             text-align: center;
-            font-size: 14px;
-            min-height: 40px;
+            font-size: 13px;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .status {
-            font-weight: bold;
-            font-size: 16px;
-            margin-top: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            color: #00ffff;
         }
 
         .frequency-display {
-            color: #4da6ff;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
+            color: #ff006e;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
-        .air-flow-bar {
-            width: 300px;
-            height: 20px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 2px solid rgba(255,255,255,0.3);
-            margin-top: 10px;
+        .airflow-text {
+            color: #00ff9e;
+            font-size: 12px;
         }
 
-        .air-flow-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4da6ff, #00ff88);
-            width: 0%;
-            transition: width 0.05s ease;
-            box-shadow: 0 0 10px rgba(100,150,255,0.6);
+        canvas {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            border-radius: 60px;
         }
 
-        .particle {
-            position: absolute;
-            pointer-events: none;
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+                padding: 30px 20px;
+                gap: 25px;
+            }
+            
+            .harmonica-body {
+                width: 100%;
+                height: 100px;
+            }
+            
+            .hole {
+                width: 32px;
+                height: 60px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">🎵 Digital Harmonica 🎵</h1>
-        
-        <div class="harmonica">
-            <canvas id="waveCanvas" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></canvas>
-            <div class="holes">
-                <div class="hole" data-frequency="262"></div>
-                <div class="hole" data-frequency="294"></div>
-                <div class="hole" data-frequency="330"></div>
-                <div class="hole" data-frequency="349"></div>
-                <div class="hole" data-frequency="392"></div>
-                <div class="hole" data-frequency="440"></div>
-                <div class="hole" data-frequency="494"></div>
-                <div class="hole" data-frequency="523"></div>
+    <div class="scene">
+        <div class="container">
+            <div class="title">🎼 HARMONICA 2026</div>
+            
+            <div class="harmonica-body">
+                <canvas id="waveCanvas"></canvas>
+                <div class="harmonica-glow"></div>
+                <div class="holes-container">
+                    <div class="hole" data-freq="262" data-note="C">C</div>
+                    <div class="hole" data-freq="294" data-note="D">D</div>
+                    <div class="hole" data-freq="330" data-note="E">E</div>
+                    <div class="hole" data-freq="349" data-note="F">F</div>
+                    <div class="hole" data-freq="392" data-note="G">G</div>
+                    <div class="hole" data-freq="440" data-note="A">A</div>
+                    <div class="hole" data-freq="494" data-note="B">B</div>
+                    <div class="hole" data-freq="523" data-note="C">C</div>
+                </div>
             </div>
-        </div>
 
-        <div class="mic-container">
-            <div class="sound-waves"></div>
-            <div class="sound-waves wave-2"></div>
-            <div class="sound-waves wave-3"></div>
-            <div class="mic-icon"></div>
-        </div>
+            <div class="mic-section">
+                <div class="sound-rings">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                </div>
+                <div class="mic-container">🎤</div>
+            </div>
 
-        <div class="air-flow-bar">
-            <div class="air-flow-fill"></div>
-        </div>
+            <div class="air-meter">
+                <div class="air-fill"></div>
+            </div>
 
-        <div class="controls">
-            <button class="start-btn" id="startBtn">Start</button>
-            <button class="stop-btn" id="stopBtn" disabled>Stop</button>
-        </div>
+            <div class="controls">
+                <button class="btn start-btn" id="startBtn">START</button>
+                <button class="btn stop-btn" id="stopBtn" disabled>STOP</button>
+            </div>
 
-        <div class="info">
-            <div class="status" id="status">Ready to play</div>
-            <div class="frequency-display" id="frequency"></div>
+            <div class="info-panel">
+                <div class="status" id="status">Ready to blow</div>
+                <div class="frequency-display" id="frequency"></div>
+                <div class="airflow-text" id="airflow">Air: 0%</div>
+            </div>
         </div>
     </div>
 
     <script>
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         let mediaStream = null;
         let analyser = null;
-        let isListening = false;
-        let currentOscillators = [];
-        let currentGain = null;
+        let isActive = false;
+        let oscillators = [];
+        let masterGain = null;
 
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
         const statusDiv = document.getElementById('status');
-        const frequencyDiv = document.getElementById('frequency');
-        const airFlowFill = document.querySelector('.air-flow-fill');
-        const harmonicaElement = document.querySelector('.harmonica');
+        const freqDiv = document.getElementById('frequency');
+        const airflowDiv = document.getElementById('airflow');
+        const airFill = document.querySelector('.air-fill');
         const holes = document.querySelectorAll('.hole');
-        const micIcon = document.querySelector('.mic-icon');
-        const soundWaves = document.querySelectorAll('.sound-waves');
-        const waveCanvas = document.getElementById('waveCanvas');
-        const waveCtx = waveCanvas.getContext('2d');
+        const micContainer = document.querySelector('.mic-container');
+        const rings = document.querySelectorAll('.ring');
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
 
-        waveCanvas.width = harmonicaElement.offsetWidth;
-        waveCanvas.height = harmonicaElement.offsetHeight;
+        canvas.width = 420;
+        canvas.height = 120;
 
-        function createHarmonicaSound(frequency, intensity) {
-            // Stop previous oscillators
-            currentOscillators.forEach(osc => osc.stop());
-            currentOscillators = [];
+        function playNote(freq, intensity) {
+            // Clean previous
+            oscillators.forEach(o => {
+                o.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.01);
+            });
 
-            if (currentGain) currentGain.disconnect();
-            currentGain = audioContext.createGain();
-            currentGain.connect(audioContext.destination);
-            currentGain.gain.setValueAtTime(intensity * 0.15, audioContext.currentTime);
+            if (oscillators.length > 0) return;
 
-            // Create multiple oscillators for rich harmonica tone
-            const baseFrequencies = [frequency, frequency * 2, frequency * 3, frequency * 0.5];
-            const baseAmplitudes = [0.4, 0.25, 0.15, 0.2];
+            masterGain = audioCtx.createGain();
+            masterGain.connect(audioCtx.destination);
+            masterGain.gain.setValueAtTime(intensity * 0.08, audioCtx.currentTime);
 
-            baseFrequencies.forEach((freq, idx) => {
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
+            // Create warm harmonica tone
+            const freqs = [freq, freq * 2, freq * 3];
+            const amps = [0.5, 0.3, 0.15];
+
+            freqs.forEach((f, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 
-                osc.type = idx === 0 ? 'sine' : 'sine';
-                osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-                gain.gain.setValueAtTime(baseAmplitudes[idx] * intensity, audioContext.currentTime);
+                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(amps[i] * intensity, audioCtx.currentTime);
                 
                 osc.connect(gain);
-                gain.connect(currentGain);
+                gain.connect(masterGain);
                 osc.start();
-                currentOscillators.push(osc);
+                oscillators.push(osc);
             });
         }
 
-        function stopHarmonicaSound() {
-            currentOscillators.forEach(osc => osc.stop());
-            currentOscillators = [];
-            if (currentGain) currentGain.disconnect();
+        function stopNote() {
+            oscillators.forEach(o => o.stop());
+            oscillators = [];
+            if (masterGain) masterGain.disconnect();
         }
 
-        function updateAirFlow(intensity) {
-            airFlowFill.style.width = (intensity * 100) + '%';
-            
-            if (intensity > 0.1) {
-                soundWaves.forEach(wave => wave.classList.add('active'));
-                micIcon.style.transform = `scale(${1 + intensity * 0.2})`;
-            } else {
-                soundWaves.forEach(wave => wave.classList.remove('active'));
-                micIcon.style.transform = 'scale(1)';
-            }
-        }
+        function drawWave(data) {
+            ctx.fillStyle = 'rgba(0, 255, 150, 0.03)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        function drawWaveform(dataArray) {
-            waveCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            waveCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+            ctx.strokeStyle = 'rgba(0, 255, 150, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
 
-            waveCtx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
-            waveCtx.lineWidth = 2;
-            waveCtx.beginPath();
-
-            const sliceWidth = waveCanvas.width / dataArray.length;
+            const sliceWidth = canvas.width / data.length;
             let x = 0;
 
-            for (let i = 0; i < dataArray.length; i++) {
-                const v = dataArray[i] / 128.0;
-                const y = (v * waveCanvas.height) / 2;
-
-                if (i === 0) {
-                    waveCtx.moveTo(x, y);
-                } else {
-                    waveCtx.lineTo(x, y);
-                }
+            for (let i = 0; i < data.length; i++) {
+                const v = data[i] / 128;
+                const y = (v * canvas.height) / 2;
+                
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+                
                 x += sliceWidth;
             }
 
-            waveCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
-            waveCtx.stroke();
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
         }
 
-        function analyzeAirFlow() {
-            if (!isListening || !analyser) return;
+        function checkMic() {
+            if (!isActive || !analyser) return;
 
-            const dataArray = new Uint8Array(analyser.frequencyBinCount);
-            analyser.getByteFrequencyData(dataArray);
+            const data = new Uint8Array(analyser.frequencyBinCount);
+            analyser.getByteFrequencyData(data);
 
-            // Calculate average intensity
             let sum = 0;
-            for (let i = 0; i < dataArray.length; i++) {
-                sum += dataArray[i];
-            }
-            const intensity = (sum / dataArray.length) / 256;
+            for (let i = 0; i < data.length; i++) sum += data[i];
+            const intensity = (sum / data.length) / 256;
 
-            updateAirFlow(intensity);
-            drawWaveform(dataArray);
+            airFill.style.width = (intensity * 100) + '%';
+            airflowDiv.textContent = `Air: ${(intensity * 100).toFixed(0)}%`;
 
-            // Map intensity to frequency (higher air pressure = higher note)
-            if (intensity > 0.15) {
-                const frequencies = [262, 294, 330, 349, 392, 440, 494, 523];
-                const freqIndex = Math.min(Math.floor(intensity * frequencies.length), frequencies.length - 1);
-                const frequency = frequencies[freqIndex];
-                
-                createHarmonicaSound(frequency, intensity);
-                frequencyDiv.textContent = `Frequency: ${Math.round(frequency)} Hz`;
+            if (intensity > 0.12) {
+                const notes = [262, 294, 330, 349, 392, 440, 494, 523];
+                const idx = Math.min(Math.floor(intensity * 8), 7);
+                const freq = notes[idx];
 
-                // Highlight hole
-                holes.forEach((hole, idx) => {
-                    if (idx === freqIndex) {
-                        hole.classList.add('active');
-                    } else {
-                        hole.classList.remove('active');
-                    }
+                playNote(freq, intensity);
+                freqDiv.textContent = `Frequency: ${Math.round(freq)} Hz`;
+                statusDiv.textContent = '🎵 Playing...';
+
+                holes.forEach((h, i) => {
+                    if (i === idx) h.classList.add('active');
+                    else h.classList.remove('active');
                 });
 
-                statusDiv.textContent = `Playing - Air Flow: ${(intensity * 100).toFixed(1)}%`;
+                micContainer.classList.add('active');
+                rings.forEach(r => r.classList.add('active'));
             } else {
-                stopHarmonicaSound();
-                holes.forEach(hole => hole.classList.remove('active'));
-                frequencyDiv.textContent = '';
-                statusDiv.textContent = 'Blow air into your microphone...';
+                stopNote();
+                holes.forEach(h => h.classList.remove('active'));
+                freqDiv.textContent = '';
+                statusDiv.textContent = 'Blow into mic...';
+                micContainer.classList.remove('active');
+                rings.forEach(r => r.classList.remove('active'));
             }
 
-            requestAnimationFrame(analyzeAirFlow);
+            drawWave(data);
+            requestAnimationFrame(checkMic);
         }
 
         startBtn.addEventListener('click', async () => {
             try {
-                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                mediaStream = await navigator.mediaDevices.getUserMedia({
                     audio: {
                         echoCancellation: false,
                         noiseSuppression: false,
@@ -455,50 +562,47 @@
                     }
                 });
 
-                const source = audioContext.createMediaStreamAudioProcessor(mediaStream);
-                analyser = audioContext.createAnalyser();
+                const source = audioCtx.createMediaStreamSource(mediaStream);
+                analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 2048;
-                
                 source.connect(analyser);
 
-                isListening = true;
+                isActive = true;
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
-                statusDiv.textContent = 'Listening... Blow air into your microphone!';
-                
-                analyzeAirFlow();
-            } catch (error) {
-                statusDiv.textContent = 'Microphone access denied!';
-                console.error('Error accessing microphone:', error);
+                statusDiv.textContent = 'Blow into mic...';
+
+                checkMic();
+            } catch (err) {
+                statusDiv.textContent = '❌ Mic access denied';
+                console.error('Mic error:', err);
             }
         });
 
         stopBtn.addEventListener('click', () => {
-            isListening = false;
-            stopHarmonicaSound();
-            
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-            }
-            
+            isActive = false;
+            stopNote();
+            if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+
             startBtn.disabled = false;
             stopBtn.disabled = true;
-            statusDiv.textContent = 'Stopped. Click Start to play again!';
-            frequencyDiv.textContent = '';
-            airFlowFill.style.width = '0%';
-            holes.forEach(hole => hole.classList.remove('active'));
-            soundWaves.forEach(wave => wave.classList.remove('active'));
-            
-            waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+            statusDiv.textContent = 'Ready to blow';
+            freqDiv.textContent = '';
+            airflowDiv.textContent = 'Air: 0%';
+            airFill.style.width = '0%';
+            holes.forEach(h => h.classList.remove('active'));
+            micContainer.classList.remove('active');
+            rings.forEach(r => r.classList.remove('active'));
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
 
         holes.forEach(hole => {
             hole.addEventListener('click', () => {
-                const frequency = parseFloat(hole.getAttribute('data-frequency'));
-                createHarmonicaSound(frequency, 0.5);
-                frequencyDiv.textContent = `Frequency: ${frequency} Hz`;
-                
-                setTimeout(stopHarmonicaSound, 200);
+                const freq = parseFloat(hole.getAttribute('data-freq'));
+                playNote(freq, 0.6);
+                freqDiv.textContent = `Note: ${hole.getAttribute('data-note')}`;
+                setTimeout(stopNote, 150);
             });
         });
     </script>
