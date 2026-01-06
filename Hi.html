@@ -449,40 +449,48 @@
         canvas.height = 120;
 
         function playNote(freq, intensity) {
-            // Clean previous
-            oscillators.forEach(o => {
-                o.frequency.setTargetAtTime(freq, audioCtx.currentTime, 0.01);
-            });
+            // Stop all previous oscillators
+            stopNote();
 
-            if (oscillators.length > 0) return;
+            if (intensity < 0.1) return;
 
-            masterGain = audioCtx.createGain();
-            masterGain.connect(audioCtx.destination);
-            masterGain.gain.setValueAtTime(intensity * 0.08, audioCtx.currentTime);
+            if (!masterGain) {
+                masterGain = audioCtx.createGain();
+                masterGain.connect(audioCtx.destination);
+            }
 
-            // Create warm harmonica tone
-            const freqs = [freq, freq * 2, freq * 3];
-            const amps = [0.5, 0.3, 0.15];
+            masterGain.gain.setValueAtTime(Math.min(intensity * 0.2, 0.3), audioCtx.currentTime);
 
-            freqs.forEach((f, i) => {
+            // Create warm harmonica tone with harmonics
+            const baseFreqs = [freq, freq * 2, freq * 3, freq * 0.5];
+            const baseAmps = [0.6, 0.25, 0.1, 0.2];
+
+            baseFreqs.forEach((f, i) => {
                 const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const gainNode = audioCtx.createGain();
                 
-                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
                 osc.type = 'sine';
-                gain.gain.setValueAtTime(amps[i] * intensity, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(f, audioCtx.currentTime);
                 
-                osc.connect(gain);
-                gain.connect(masterGain);
-                osc.start();
-                oscillators.push(osc);
+                const amplitude = baseAmps[i] * Math.min(intensity, 1);
+                gainNode.gain.setValueAtTime(amplitude, audioCtx.currentTime);
+                
+                osc.connect(gainNode);
+                gainNode.connect(masterGain);
+                osc.start(audioCtx.currentTime);
+                
+                oscillators.push({ osc, gainNode });
             });
         }
 
         function stopNote() {
-            oscillators.forEach(o => o.stop());
+            oscillators.forEach(item => {
+                try {
+                    item.osc.stop(audioCtx.currentTime);
+                    item.gainNode.disconnect();
+                } catch (e) {}
+            });
             oscillators = [];
-            if (masterGain) masterGain.disconnect();
         }
 
         function drawWave(data) {
@@ -529,7 +537,7 @@
                 const freq = notes[idx];
 
                 playNote(freq, intensity);
-                freqDiv.textContent = `Frequency: ${Math.round(freq)} Hz`;
+                freqDiv.textContent = `🎵 ${Math.round(freq)} Hz`;
                 statusDiv.textContent = '🎵 Playing...';
 
                 holes.forEach((h, i) => {
@@ -600,9 +608,9 @@
         holes.forEach(hole => {
             hole.addEventListener('click', () => {
                 const freq = parseFloat(hole.getAttribute('data-freq'));
-                playNote(freq, 0.6);
+                playNote(freq, 0.7);
                 freqDiv.textContent = `Note: ${hole.getAttribute('data-note')}`;
-                setTimeout(stopNote, 150);
+                setTimeout(stopNote, 200);
             });
         });
     </script>
